@@ -10,7 +10,10 @@ public class SwMaker {
     private int designWidth;
     private String moduleName;
     private int[] swValues;
-    private int[] dpiValues = new int[]{120, 160, 213, 240, 260, 280, 300, 320, 340, 360, 400, 420, 440, 450, 480, 560, 640};
+
+    public SwMaker() {
+        this(new Builder());
+    }
 
     public SwMaker(Builder builder) {
         this.designWidth = builder.designWidth;
@@ -21,7 +24,15 @@ public class SwMaker {
     public static final class Builder {
         private int designWidth;
         private String moduleName;
+        private int[] dpiValues;
         private int[] swValues;
+
+        public Builder() {
+            this.designWidth = 1080;
+            this.moduleName = "app";
+            this.dpiValues = new int[]{120, 160, 213, 240, 260, 280, 300, 320, 340, 360, 400, 420, 440, 450, 480, 560, 640};
+            this.swValues = calculateSw();
+        }
 
         public Builder designWidth(int designWidth) {
             this.designWidth = designWidth;
@@ -41,19 +52,28 @@ public class SwMaker {
         public SwMaker build() {
             return new SwMaker(this);
         }
-    }
 
 
-    /**
-     * 计算最小宽度。
-     *
-     */
-    public void calculateSw(){
-        for (int dpiValue : dpiValues) {
-
+        /**
+         * 计算最小宽度。
+         * px=dp/(dpi/160)
+         * 1dp=(dpi/160)px => 1dp对应(dpi/160)px
+         * 最小宽度=屏幕宽度/(dpi/160)
+         */
+        public int[] calculateSw() {
+            int[] swValues = new int[dpiValues.length];
+            for (int i = 0; i < dpiValues.length; i++) {
+                int swValue = (int) (designWidth / (dpiValues[i] / 160f));
+                swValues[i] = swValue;
+//            System.out.println("swValue: " + swValue);
+            }
+            return swValues;
         }
     }
 
+    /**
+     * 生成所有dimens.xml文件
+     */
     public void makeAllDimens() {
         try {
             for (int swValue : swValues) {
@@ -91,7 +111,7 @@ public class SwMaker {
                     float spValue = i / (float) designWidth * swValue;
                     BigDecimal bigDecimal = new BigDecimal(spValue);
                     bigDecimal.setScale(4, BigDecimal.ROUND_HALF_UP);
-                    sb.append(String.format(Locale.getDefault(),"   <dimen name=\"sp_%2$d\">%3$.4fsp</dimen>\r\n", "", i, spValue));
+                    sb.append(String.format(Locale.getDefault(), "   <dimen name=\"sp_%2$d\">%3$.4fsp</dimen>\r\n", "", i, spValue));
                 }
 
                 sb.append("</resources>\r\n");
