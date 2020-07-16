@@ -1,4 +1,4 @@
-package com.zeasn.gitcopydemo;
+package com.mackwu.app;
 
 import org.junit.Test;
 
