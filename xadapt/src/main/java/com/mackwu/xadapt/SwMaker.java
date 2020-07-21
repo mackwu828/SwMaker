@@ -96,7 +96,9 @@ public class SwMaker {
         }
 
         public Builder prefix(String prefix) {
-            this.prefix = prefix + "_";
+            if (!prefix.isEmpty()) {
+                this.prefix = prefix + "_";
+            }
             return this;
         }
 
