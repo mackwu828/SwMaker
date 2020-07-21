@@ -5,7 +5,7 @@
 
 
 ## 二、用法
-2.1 设计图尺寸: 1920x1080
+2.1 自定义设计图尺寸。如1920x1080
 ```
         SwMaker swMaker = new SwMaker.Builder()
                 .designWidth(1080)
