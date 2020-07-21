@@ -20,15 +20,34 @@ public class SwManager {
 
 
     /**
-     * 设计图尺寸=1080x1920
+     * 设计图尺寸: 1920x1080
      */
-    public void makeDesignWidth1080(){
+    public void makeDesignWidth1080() {
         SwMaker swMaker = new SwMaker.Builder()
                 .designWidth(1080)
-                .moduleName("app")
-//                .swValues(new int[]{540})
                 .build();
         swMaker.makeAllDimens();
     }
 
+    /**
+     * 设计图尺寸: 1920x1080
+     * 前缀：weather
+     */
+    public void makeDesignWidth1080WeatherPrefix() {
+        SwMaker swMaker = new SwMaker.Builder()
+                .designWidth(1080)
+                .prefix("weather")
+                .build();
+        swMaker.makeAllDimens();
+    }
+
+    /**
+     * 设计图尺寸: 960x540
+     */
+    public void makeDesignWidth540() {
+        SwMaker swMaker = new SwMaker.Builder()
+                .designWidth(540)
+                .build();
+        swMaker.makeAllDimens();
+    }
 }

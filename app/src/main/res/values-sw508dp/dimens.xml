@@ -1972,6 +1972,7 @@
    <dimen name="dp_1917">901.7000dp</dimen>
    <dimen name="dp_1918">902.1703dp</dimen>
    <dimen name="dp_1919">902.6407dp</dimen>
+   <dimen name="dp_1920">903.1111dp</dimen>
    <dimen name="sp_0">0.0000sp</dimen>
    <dimen name="sp_1">0.4704sp</dimen>
    <dimen name="sp_2">0.9407sp</dimen>
@@ -2092,4 +2093,5 @@
    <dimen name="sp_117">55.0333sp</dimen>
    <dimen name="sp_118">55.5037sp</dimen>
    <dimen name="sp_119">55.9741sp</dimen>
+   <dimen name="sp_120">56.4444sp</dimen>
 </resources>

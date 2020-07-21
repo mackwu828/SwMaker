@@ -9,7 +9,13 @@ public class SwMaker {
 
     private int designWidth;
     private String moduleName;
+    private int[] dpiValues;
     private int[] swValues;
+    private int dpMin;
+    private int dpMax;
+    private int spMin;
+    private int spMax;
+    private String prefix;
 
     public SwMaker() {
         this(new Builder());
@@ -19,6 +25,11 @@ public class SwMaker {
         this.designWidth = builder.designWidth;
         this.moduleName = builder.moduleName;
         this.swValues = builder.swValues;
+        this.dpMin = builder.dpMin;
+        this.dpMax = builder.dpMax;
+        this.spMin = builder.spMin;
+        this.spMax = builder.spMax;
+        this.prefix = builder.prefix;
     }
 
     public static final class Builder {
@@ -26,12 +37,22 @@ public class SwMaker {
         private String moduleName;
         private int[] dpiValues;
         private int[] swValues;
+        private int dpMin;
+        private int dpMax;
+        private int spMin;
+        private int spMax;
+        private String prefix;
 
         public Builder() {
             this.designWidth = 1080;
             this.moduleName = "app";
             this.dpiValues = new int[]{120, 160, 213, 240, 260, 280, 300, 320, 340, 360, 400, 420, 440, 450, 480, 560, 640};
             this.swValues = calculateSw();
+            this.dpMin = -50;
+            this.dpMax = 1920;
+            this.spMin = 0;
+            this.spMax = 120;
+            this.prefix = "";
         }
 
         public Builder designWidth(int designWidth) {
@@ -44,8 +65,38 @@ public class SwMaker {
             return this;
         }
 
+        public Builder dpiValues(int[] dpiValues) {
+            this.dpiValues = dpiValues;
+            return this;
+        }
+
         public Builder swValues(int[] swValues) {
             this.swValues = swValues;
+            return this;
+        }
+
+        public Builder calculateSwByDpi() {
+            this.swValues = calculateSw();
+            return this;
+        }
+
+        public Builder dpMin(int dpMin) {
+            this.dpMin = dpMin;
+            return this;
+        }
+
+        public Builder dpMax(int dpMax) {
+            this.dpMax = dpMax;
+            return this;
+        }
+
+        public Builder spMax(int spMax) {
+            this.spMax = spMax;
+            return this;
+        }
+
+        public Builder prefix(String prefix) {
+            this.prefix = prefix + "_";
             return this;
         }
 
@@ -91,27 +142,27 @@ public class SwMaker {
                 StringBuilder sb = new StringBuilder();
                 sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n")
                         .append("<resources>\r\n")
-                        .append(String.format(Locale.getDefault(), "   <string name=\"design_width\">%dpx</string>\r\n", designWidth))
-                        .append(String.format(Locale.getDefault(), "   <string name=\"current_sw\">%ddp</string>\r\n", swValue));
+                        .append(String.format(Locale.getDefault(), "   <string name=\"" + prefix + "design_width\">%dpx</string>\r\n", designWidth))
+                        .append(String.format(Locale.getDefault(), "   <string name=\"" + prefix + "current_sw\">%ddp</string>\r\n", swValue));
 
                 // dp
-                for (int i = -50; i < 1920; i++) {
+                for (int i = dpMin; i <= dpMax; i++) {
                     float dpValue = i / (float) designWidth * swValue;
                     BigDecimal bigDecimal = new BigDecimal(dpValue);
                     bigDecimal.setScale(4, BigDecimal.ROUND_HALF_UP);
                     if (i < 0) {
-                        sb.append(String.format(Locale.getDefault(), "   <dimen name=\"_dp_%2$d\">%3$.4fdp</dimen>\r\n", "", i * -1, dpValue));
+                        sb.append(String.format(Locale.getDefault(), "   <dimen name=\"_" + prefix + "dp_%2$d\">%3$.4fdp</dimen>\r\n", "", i * -1, dpValue));
                     } else {
-                        sb.append(String.format(Locale.getDefault(), "   <dimen name=\"dp_%2$d\">%3$.4fdp</dimen>\r\n", "", i, dpValue));
+                        sb.append(String.format(Locale.getDefault(), "   <dimen name=\"" + prefix + "dp_%2$d\">%3$.4fdp</dimen>\r\n", "", i, dpValue));
                     }
                 }
 
                 // sp
-                for (int i = 0; i < 120; i++) {
+                for (int i = spMin; i <= spMax; i++) {
                     float spValue = i / (float) designWidth * swValue;
                     BigDecimal bigDecimal = new BigDecimal(spValue);
                     bigDecimal.setScale(4, BigDecimal.ROUND_HALF_UP);
-                    sb.append(String.format(Locale.getDefault(), "   <dimen name=\"sp_%2$d\">%3$.4fsp</dimen>\r\n", "", i, spValue));
+                    sb.append(String.format(Locale.getDefault(), "   <dimen name=\"" + prefix + "sp_%2$d\">%3$.4fsp</dimen>\r\n", "", i, spValue));
                 }
 
                 sb.append("</resources>\r\n");
